@@ -1,0 +1,810 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+  <script type="text/javascript" src="js/shCore.js"></script>
+  <script type="text/javascript" src="js/shBrushCSharp.js"></script>
+  <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+  <script type="text/javascript" src="js/doc.js"></script>
+  <link href="css/shCoreRDark.css" rel="stylesheet" type="text/css" />
+  <link href="css/shThemeRDark.css" rel="stylesheet" type="text/css" />
+  <link href="css/doc.css" rel="stylesheet" type="text/css" />
+  <title>C# Library Documentation</title>
+</head>
+<body>
+  <div id="page">
+    <menu>
+      <header>
+        <img src="logo.png"/>
+        <p class="title">C#</p>
+      </header>
+    </menu>
+    <div id="content">
+      <h1>Getting started</h1>
+      <p>The Boxtal c# library allow you to manage your account, make quotation, order and track your packages, this documentation cover the base required to use these services. To see a full class documentation, please see the <a target="_blank" href="assembly/index.html">auto-generated documentation</a>.</p>
+      <p>If you have any suggestion, question, or a bug to report, feel free to contact us at <a class="contact"></a>.</p>
+      <h2>Installation</h2>
+      <p>To include our assembly in your projects, you need to include either the dll file (in bin/) or directly the source code (in src/). Then, in your code, include the namespace with :</p>
+      <pre class="brush: csharp">
+      using Boxtal;
+      </pre>
+      <h3>Windows (Visual Basic)</h3>
+      <p>TODO</p>
+      <h3>Linux (mono)</h3>
+      <p>To compile using mono you need first to install mono.</p>
+      <pre>
+sudo apt-get install mono-complete
+      </pre>
+      <p>Once you start your c# project, add the assembly during compilation using the -r option with <a target="_blank" href="http://www.mono-project.com/docs/about-mono/languages/csharp/">dmcs</a>.</p>
+      <pre>
+dmcs -r:boxtal.dll main.cs
+      </pre>
+      <h2>Create an account</h2>
+      <p>In order to use this API, you need a Boxtal account, you can create one directly on <a target="_blank" href="https://www.boxtal.com">boxtal (com)</a> or <a target="_blank" href="https://www.boxtal.es">boxtal (es)</a>. During the installation process, check <i>"I would like to install the EnvoiMoinsCher module directly on my E-commerce website."</i> to recieve your API keys to your email address.</p>
+      <p>You should have then the required informations : </p>
+      <ul>
+        <li><b>Login</b> : your boxtal account login</li>
+        <li><b>Password</b> : your boxtal account password</li>
+        <li><b>Production key</b> : the production key recieved by mail</li>
+        <li><b>Test key</b> : the test key recieved by mail</li>
+      </ul>
+      <h2>Configuration</h2>
+      <p>The library use some configuration and global values, you can let them by default and configure each request on the go, or define them at the begining of your code.</p>
+      <h3>Credentials</h3>
+      <p>You can define your default credentials with <a target="_blank" href="assembly/Boxtal/Credentials.html#M:Boxtal.Credentials.Set(System.String,System.String,System.String,System.String)">Credentials.Set</a>.</p>
+      <pre class="brush: csharp">
+      using Boxtal;
+
+      public class Sample
+      {
+        public static void Main(string[] args)
+        {
+          Credentials.Set("login", "password", "prodKey", "testKey");
+
+          // Each Boxtal request will now use these credentials by default
+        }
+      }
+      </pre>
+      <p>You can still define your credentials with each boxtal request using <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Login">Login</a>, <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Password">Password</a>, <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.KeyProd">KeyProd</a> and <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.KeyTest">KeyTest</a> properties.</p>
+      <pre class="brush: csharp">
+      using Boxtal;
+
+      public class Sample
+      {
+        public static void Main(string[] args)
+        {
+          Credentials.Set("login", "password", "keyProd", "keyTest");
+
+          var carriersQuery = new CarrierList();
+
+          carriersQuery.Login = "newLogin";
+          carriersQuery.Password  = "newPassword";
+          carriersQuery.KeyProd  = "newKeyProd";
+          carriersQuery.KeyTest  = "newKeyTest";
+
+          // only carriersQuery will use these credentials
+        }
+      }
+      </pre>
+      <h3>Global</h3>
+      <p><a target="_blank" href="assembly/Boxtal/Global.html">Global</a> parameters works the same way as Credentials, you can set them by default, and use <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Locale">Locale</a> or <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Environment">Environment</a> properties to change them on each request.</p>
+      <pre class="brush: csharp">
+      using Boxtal;
+
+      public class Sample
+      {
+        public static void Main(string[] args)
+        {
+
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.Environment = Environment.Test;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+
+          var carriersQuery = new CarrierList();
+
+          carriersQuery.Locale = Locale.EN;
+          carriersQuery.Environment = Environment.Test;
+        }
+      }
+      </pre>
+      <p><a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.ModulePlatform ">ModulePlatform</a> and <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.ModuleVersion ">ModuleVersion</a> do not affect your requests, they are necessary for Order requests or in case you have a special partnership with Boxtal.</p>
+      <p>The <a target="_blank" href="assembly/Boxtal/Global.html#F:Boxtal.Global.Debug">Debug</a> global parameter will output all request executed by the library, and also save the last response in a file named return.xml in the default directory.
+      <h2>Exceptions</h2>
+      <p>It is important to know that most of Boxtal request may throw an <a target="_blank" href="assembly/Boxtal/ApiException.html">ApiException</a>, make sure to handle them.
+      <pre class="brush: csharp">
+      using System.Collections.Generic;
+      using System;
+      using Boxtal;
+
+      public class Sample
+      {
+        public static void Main(string[] args)
+        {
+
+          Credentials.Set("login", "password", "keyprod", "keytest");
+
+          Global.Debug = true;
+          Global.Environment = Boxtal.Environment.Test;
+
+          var carriersQuery = new CarrierList();
+
+          // load the list of all available carriers
+          List&lt;Carrier> carriers = null;
+          try{
+            carriers = carriersQuery.Get();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Exception : " + e);
+          }
+        }
+      }
+      </pre>
+      <h1>Quotation</h1>
+      <h2>Usage</h2>
+      <p>A quotation is composed of 2 Persons and a list of packages, the result may vary with your adresses and the conent of your packages.</p>
+      <p>Here is an example of basic quotation using <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a>.</p>
+      <pre class="brush: csharp">
+      using System.Collections.Generic;
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("login", "password", "keyProd", "keyTest");
+
+          // create the 2 persons for this shipping
+          // for a quotation, only the address part of the person
+          // is mandatory (country, town, zipcode and type)
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new quotation for a package of type "parcel"
+          var quotation = new QuoteList(from, to, Shipping.PackageTypeValue.Parcel);
+          quotation.ContentType = "10120"; // we are sending books
+
+          // adding 1 package
+          quotation.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the quotation
+          List&lt;Quote> quotes = null;
+          try {
+            quotes = quotation.Get();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the quotation : " + e);
+            return;
+          }
+
+          // display result
+          foreach(Quote quote in quotes) {
+            Console.WriteLine(quote);
+          }
+        }
+      }
+      </pre>
+      <h2>Parameters</h2>
+      <p>Each Carrier has it's own parameters, which may change the price or the delivery delai. We cannot provide a complete list of these parameters as they can change at any time. Each Quote returned by <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> profite a list of the missing parameters in your request with the <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Parameters">Parameters</a> property. The Option property profite a list of special services with the necessary parameters.</p>
+      <p><a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> query allow you to set all of these parameters with the <a target="_blank" href="assembly/Boxtal/Query.html#P:Boxtal.Query.Parameters">Parameters</a> property. For simplicity reasons, aliases exists for most of these parameters.</p>
+      <h2>Content type</h2>
+      <p>You also need to specify the type of the content your are sending, each type is associated with an id you need to set to the <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.ContentType">ContentType</a> property. The full list of content type can be accessed with the <a target="_blank" href="assembly/Boxtal/ContentCategoryList.html">ContentCategoryList</a> request.</p>
+      <pre class="brush: csharp">
+        using System.Collections.Generic;
+        using System;
+        using Boxtal;
+
+        public class Sample
+        {
+          public static void Main(string[] args)
+          {
+
+            Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+            Global.Debug = true;
+            Global.Environment = Boxtal.Environment.Test;
+
+            var contentCategoryList = new ContentCategoryList();
+
+            // load the list of all possible content category
+            List&lt;ContentCategory> categories = null;
+            try{
+              categories = contentCategoryList.Get();
+            }
+            catch(ApiException e) {
+              Console.WriteLine("Exception : " + e);
+            }
+
+            foreach(ContentCategory categorie in categories) {
+              Console.WriteLine(categorie);
+            }
+          }
+        }
+      </pre>
+      <h2>Carriers limitation</h2>
+      <p>The main limitation of <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> is the execution time, Boxtal send a request to each carrier. By increasing the number of carrier, you increase the chance to have a request taking more time than others. A solution is to limit the number of carriers in your request with <a target="_blank" href="assembly/Boxtal/QuoteList.html#P:Boxtal.QuoteList.Carriers">Carriers</a> property. This property require Carrier codes, you can list all available carrier codes with the <a target="_blank" href="assembly/Boxtal/CarrierList.html">CarrierList</a> request.</p>
+      <h2>Parcel points</h2>
+      <p>Carriers with parcel point collect or delivery require special parameters(<a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.PickupParcelPoint">PickupParcelPoint</a> and <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.DropParcelPoint">DropParcelPoint</a>) for the chosen parcel point code. These codes can be loaded via <a target="_blank" href="assembly/Boxtal/ParcelPointList.html">ParcelPointList</a> request which return a list of <a target="_blank" href="assembly/Boxtal/ParcelPoint.html">ParcelPoint</a> for a specific carrier and address.</p>
+      <pre class="brush: csharp">
+      using System.Collections.Generic;
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          Person address = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+
+          // we now create a new quotation for a package of type "parcel"
+          var parcelPointsRequest =
+            new ParcelPointList(ParcelPoint.ParcelPointType.Dropoff, address);
+
+          // you need to specify which carrier's parcel point you want
+          parcelPointsRequest.Carriers.Add("MONRCpourToi");
+
+          // execute the request
+          Dictionary&lt;string, List&lt;ParcelPoint>> parcelPointLists = null;
+          try {
+            parcelPointLists = parcelPointsRequest.Get();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the request : " + e);
+            return;
+          }
+
+          // display parcel points
+          foreach(KeyValuePair&lt;string , List&lt;ParcelPoint>> parcelPointList
+              in parcelPointLists) {
+            Console.WriteLine("Parcel Pints for " + parcelPointList.Key + " :");
+            foreach(ParcelPoint parcelPoint in parcelPointList.Value)
+            {
+              Console.WriteLine(parcelPoint);
+            }
+          }
+        }
+      }
+      </pre>
+      <p>Please node that Quote of parcel point carriers also contains the parcel point parameter with a list of parcel points as an enum XML element.</p>
+      <h2>Carriers list</h2>
+      <p>Quotations require to know all available carriers with their characteristics, the <a target="_blank" href="assembly/Boxtal/CarrierList.html">CarrierList</a> query retrieve all carriers informations so you choose which one you will use for your shipping.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("UPSEStandard", from, to, Shipping.PackageTypeValue.Parcel);
+          order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          order.DisponibilityMin = "09:00";
+          order.DisponibilityMax = "18:00";
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(order);
+        }
+      }
+      </pre>
+      <h1>Order</h1>
+      <p>After choosing your offer with the <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> request, the <a target="_blank" href="assembly/Boxtal/Order.html">Order</a> request allow you to create your order. Once the request is accepted, a new order will be added to your account.</p>
+      <h2>Usage</h2>
+      <p>Order request use almost all parameters used by the <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> request, so the <a target="_blank" href="assembly/Boxtal/Order.html">Order</a> request use almost the same code.</p>
+      <p>Each order creation will generate an unique reference, you must save this reference for further requests</p>
+      <p class="warning">Make sure you test your Order requests in Test environment.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("UPSEStandard", from, to,
+            Shipping.PackageTypeValue.Parcel);
+          order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          order.DisponibilityMin = "09:00";
+          order.DisponibilityMax = "18:00";
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(order);
+        }
+      }
+      </pre>
+      <h2>From a quotation</h2>
+      <p>To make things even simpler, <a target="_blank" href="assembly/Boxtal/QuoteList.html">QuoteList</a> request provide a <a target="_blank" href="assembly/Boxtal/QuoteList.html#M:Boxtal.QuoteList.ToOrder(System.String)">ToOrder</a> function creating a new <a target="_blank" href="assembly/Boxtal/Order.html">Order</a> request with the same parameters.</p>
+      <pre class="brush: csharp">
+      using System.Collections.Generic;
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for a quotation, only the address part of the person
+          // is mandatory (country, town, zipcode and type)
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new quotation for a package of type "parcel"
+          var quotation = new QuoteList(from, to, Shipping.PackageTypeValue.Parcel);
+          quotation.ContentType = "10120"; // we are sending books
+          quotation.Carriers.Add("UPSEStandard");
+          quotation.DisponibilityMin = "09:00";
+          quotation.DisponibilityMax = "18:00";
+          quotation.Description = "my content";
+
+          // adding 1 package
+          quotation.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the quotation
+          List&gt;Quote> quotes = null;
+          try {
+            quotes = quotation.Get();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the quotation : " + e);
+            return;
+          }
+
+          // display result
+          foreach(Quote quote in quotes) {
+            Console.WriteLine(quote);
+          }
+
+          // create a new order from the quotation
+          Order order = quotation.ToOrder("UPSEStandard");
+
+          // create the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          Console.WriteLine(order);
+        }
+      }
+      </pre>
+      <h2>International</h2>
+      <p>For international shipping, a few more parameters are needed for customs.</p>
+      <ul>
+        <li>Shipping reason : set via <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.Reason">Reason</a> property</li>
+        <li>Proforma description : set via the <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.Proforma">Proforma</a> property</li>
+      </ul>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("US", "10001", "New york",
+            "01 Allen Street", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("InternationalPriorityCC", from, to,
+            Shipping.PackageTypeValue.Parcel);
+          order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          order.DisponibilityMin = "09:00";
+          order.DisponibilityMax = "18:00";
+          order.Reason = Shipping.ReasonType.Sale;
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // adding proforma description
+          order.Proforma.Add(new ProformaDescription ("some books",
+            "FR", 5, 20.0f, 0.19f));
+
+          // add insurance
+          order.Value = 100.0f;
+          order.Insurance = new Insurance(Insurance.WrappingValue.Box,
+            Insurance.PackageMaterialValue.CardboardBox,
+            Insurance.InteriorProtectionValue.PlasticBubbleWrap,
+            Insurance.FastenerValue.AdhesiveTape);
+
+          // execute the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(order);
+        }
+      }
+      </pre>
+      <h2>Insurance</h2>
+      <p>You can insure your shipping with our own insurance. In case of damage or loss, a part of your package's content will be refund. To enable the insurance on your shipping, you can use the <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.Insurance">Insurance</a> property.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("UPSEStandard", from, to,
+            Shipping.PackageTypeValue.Parcel);
+          order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          order.DisponibilityMin = "09:00";
+          order.DisponibilityMax = "18:00";
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // add insurance
+          order.Value = 100.0f;
+          order.Insurance = new Insurance(Insurance.WrappingValue.Box,
+            Insurance.PackageMaterialValue.CardboardBox,
+            Insurance.InteriorProtectionValue.PlasticBubbleWrap,
+            Insurance.FastenerValue.AdhesiveTape);
+
+          // execute the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(order);
+        }
+      }
+      </pre>
+      <h2>Missing parameters</h2>
+      <p>The needed or optional parameters vary with the chosen carrier and your destination, to make things easier, the <a target="_blank" href="assembly/Boxtal/Order.html#M:Boxtal.Order.getMissingParameters()">getMissingParameters</a> function will return all the non set parameters.</p>
+      <pre class="brush: csharp">
+      using System.Collections.Generic;
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("UPSEStandard", from, to,
+            Shipping.PackageTypeValue.Parcel);
+          //order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          //order.DisponibilityMin = "09:00";
+          //order.DisponibilityMax = "18:00";
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the order
+          List&lt;Quote.Parameter> missingParameters = null;
+          try {
+            missingParameters = order.getMissingParameters();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          foreach(Quote.Parameter missingParameter in missingParameters)
+          {
+            Console.WriteLine(missingParameter);
+          }
+        }
+      }
+      </pre>
+      <h2>Shipping label</h2>
+      <p>Once your order is passed, a shipping label (and maybe other labels) will be generated by the carrier. The <a target="_blank" href="assembly/Boxtal/Document.html">Document</a> request allow you to download these documents.</p>
+      <p class="warning">The test environment auto generate a fake shipping label for most carriers, but in production environment, the carrier may take time to generate a shipping label. See the Package tracking part for shipping label notifications.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.ModulePlatform = "myapplication";
+          Global.ModuleVersion = "1.0.0";
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // create the 2 persons for this shipping
+          // for an order, all parameters are mandatory
+          Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
+            Person.PersonType.Company, "boxtal", Person.CivilityType.M,
+            "prenom", "nom", "test@boxtale.com", "0606060606");
+          Person to = new Person("FR", "13001", "Marseille",
+            "34 boulevard Charles-Livon", Person.PersonType.Individual, null,
+            Person.CivilityType.M, "prenom", "nom", "test@boxtale.com",
+            "0606060606");
+
+          // we now create a new order for a package of type "parcel"
+          var order =  new Order("MONRCpourToi", from, to,
+            Shipping.PackageTypeValue.Parcel);
+          order.Description = "Some description";
+          order.ContentType = "10120"; // we are sending books
+          order.PickupParcelPoint = "MONR-041033";
+          order.DropParcelPoint = "MONR-041033";
+
+          // adding 1 package
+          order.Packages.Add(new Package(1.0f, 20, 20, 20));
+
+          // execute the order
+          try {
+            order.Create();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the order : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(order);
+
+          // we only need one label for the example
+          Document shippingLabel = order.Documents[0];
+
+          // execute the order
+          try {
+            shippingLabel.Load();
+            shippingLabel.Save("my_label.pdf");
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Unable to save shipping label : " + e);
+            return;
+          }
+
+          Console.WriteLine("Shipping label saved.");
+        }
+      }
+      </pre>
+      <h1>Package tracking</h1>
+      <p>This part is focused on tracking your order after creating it, Boxtal API provide tools to know at any time where your package is.</p>
+      <h2>Status</h2>
+      <p>The <a target="_blank" href="assembly/Boxtal/Status.html">Status</a> request directly load the actual tracking status of your order in addition with all available documents.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+
+          // you can only access to orders created with the same account
+          Status status = new Status("1612013819MONR0AV5FR");
+
+          // execute the status request
+          try {
+            status.Load();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the status request : " + e);
+            return;
+          }
+
+          // display result
+          Console.WriteLine(status);
+        }
+      }
+      </pre>
+      <h2>Push url</h2>
+      <p>The push url is another way to load order informations, this parameter is set during the order creation with the <a target="_blank" href="assembly/Boxtal/Shipping.html#P:Boxtal.Shipping.PushUrl">PushUrl</a> property which required a link to your own page. The push url is called by our server on each tracking update of your order with all tracking informations as GET parameters.</p>
+      <p>All informations about the push url are available <a target="_blank" href="http://ecommerce.envoimoinscher.com/api/documentation/url-de-push/">here</a>.</p>
+      <p class="warning">Make sure your push url is accessible at any time to avoidtracking issues.</p>
+      <h1>User</h1>
+      <p>The user request allow you to manage your notification settings and to load some of your account parameters.</p>
+      <h2>Usage</h2>
+      <p>You can simply load or update your user account using the <a target="_blank" href="assembly/Boxtal/User.html">User</a> request, note that the api key is optional for this request.</p>
+      <pre class="brush: csharp">
+      using System;
+      using Boxtal;
+
+      public class Test
+      {
+        public static void Main(string[] args)
+        {
+          // configure the library
+          Global.Debug = true;
+          Global.Locale = Locale.EN;
+          Global.Environment = Boxtal.Environment.Test;
+          Credentials.Set("codersEmc", "codersEmc", null, null);
+
+          // you can only access to orders created with the same account
+          User user = new User();
+
+          try {
+            // load user data
+            user.Load();
+            Console.WriteLine(user);
+
+            // user now contains your api keys
+            Credentials.KeyProd = user.KeyProd;
+            Credentials.KeyTest = user.KeyTest;
+
+            // ...
+
+            user.Update();
+          }
+          catch(ApiException e) {
+            Console.WriteLine("Something went wrong with the user request : " + e);
+            return;
+          }
+        }
+      }
+      </pre>
+    </div>
+  </div>
+  <script type="text/javascript">
+    SyntaxHighlighter.all();
+  </script>
+</body>
+</html>
