@@ -209,8 +209,7 @@ dmcs -r:boxtal.dll main.cs
           public static void Main(string[] args)
           {
 
-            Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
-
+            Credentials.Set("login", "password", "prodKey", "testKey");
             Global.Debug = true;
             Global.Environment = Boxtal.Environment.Test;
 
@@ -248,7 +247,7 @@ dmcs -r:boxtal.dll main.cs
           Global.Debug = true;
           Global.Locale = Locale.EN;
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           Person address = new Person("FR", "75002", "Paris", "15 rue marsolier",
             Person.PersonType.Company, "boxtal", Person.CivilityType.M,
@@ -300,8 +299,8 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
-
+          Credentials.Set("login", "password", "prodKey", "testKey");
+          
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
           Person from = new Person("FR", "75002", "Paris", "15 rue marsolier",
@@ -356,7 +355,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
@@ -410,7 +409,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for a quotation, only the address part of the person
@@ -485,7 +484,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
@@ -550,7 +549,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
@@ -611,7 +610,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
@@ -669,7 +668,7 @@ dmcs -r:boxtal.dll main.cs
           Global.ModulePlatform = "myapplication";
           Global.ModuleVersion = "1.0.0";
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // create the 2 persons for this shipping
           // for an order, all parameters are mandatory
@@ -737,7 +736,7 @@ dmcs -r:boxtal.dll main.cs
           Global.Debug = true;
           Global.Locale = Locale.EN;
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", "codersEmc", "codersEmc");
+          Credentials.Set("login", "password", "prodKey", "testKey");
 
           // you can only access to orders created with the same account
           Status status = new Status("1612013819MONR0AV5FR");
@@ -776,7 +775,7 @@ dmcs -r:boxtal.dll main.cs
           Global.Debug = true;
           Global.Locale = Locale.EN;
           Global.Environment = Boxtal.Environment.Test;
-          Credentials.Set("codersEmc", "codersEmc", null, null);
+          Credentials.Set("login", "password", null, null);
 
           // you can only access to orders created with the same account
           User user = new User();
